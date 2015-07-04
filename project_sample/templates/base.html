@@ -1,0 +1,64 @@
+{% load i18n %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="NoteIt">
+    <meta name="author" content="Harsh Parekh">
+    <!-- Le styles -->
+    <link rel="shortcut icon" href="http://twitter.github.com/bootstrap/assets/ico/favicon.ico">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+    </style>
+  </head>
+
+  <body>
+
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="{% url 'index' %}">{%trans "NoteIt" %}</a>
+        </div>
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+          </ul>
+            {% if user.is_authenticated %}
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="{% url 'django.contrib.auth.views.password_change' %}" data-placement="bottom" data-toggle="tooltip" data-original-title="New Note"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a></li>
+                <li><a href="{% url 'django.contrib.auth.views.logout' %}" data-placement="bottom" data-toggle="tooltip" data-original-title="Logout"><span class="glyphicon glyphicon-log-out" aria-hidden="true"></span></a></li>
+            </ul>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="container">
+    {% block container %}
+        <div class="jumbotron">
+            <h1>{% trans "Hello, " %}{{user.username}}{% trans "!" %}</h1>
+            <p>You can start adding notes here.</p>
+        </div>
+    {% endblock %}
+    </div> <!-- /container -->
+	
+    <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.0.3.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+	<script>
+	$(document).ready(function () {
+    $("body").tooltip({
+        selector: '[data-toggle="tooltip"]'
+    });
+});
+	</script>
+  </body>
+</html>
