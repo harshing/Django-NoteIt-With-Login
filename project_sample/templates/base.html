@@ -35,29 +35,120 @@
           </ul>
             {% if user.is_authenticated %}
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="{% url 'django.contrib.auth.views.password_change' %}" data-placement="bottom" data-toggle="tooltip" data-original-title="New Note"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a></li>
-                <li><a href="{% url 'django.contrib.auth.views.logout' %}" data-placement="bottom" data-toggle="tooltip" data-original-title="Logout"><span class="glyphicon glyphicon-log-out" aria-hidden="true"></span></a></li>
+                <li><a data-target=".bs-example-modal-sm" role="button" class="btn" data-toggle="modal"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp;New&nbsp;Note</a></li>
+                <li><a href="{% url 'django.contrib.auth.views.logout' %}"><span class="glyphicon glyphicon-log-out" aria-hidden="true"></span>&nbsp;Logout</a></li>
             </ul>
             {% endif %}
         </div>
     </div>
-
+	<div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+		<div class="modal-dialog modal-sm">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title">Add a New Note</h4>
+				</div>
+				<div class="modal-body">
+					<form>
+						<div class="form-group">
+							<label for="recipient-name" class="control-label">Title:</label>
+							<input type="text" class="form-control" id="recipient-name">
+						</div>
+						<div class="form-group">
+							<label for="message-text" class="control-label">Description:</label>
+							<textarea class="form-control" id="message-text"></textarea>
+						</div>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					<button type="button" class="btn btn-primary">Save changes</button>
+				</div>
+			</div>
+		</div>
+	</div>
     <div class="container">
     {% block container %}
         <div class="jumbotron">
+		{% if user.is_authenticated %}
             <h1>{% trans "Hello, " %}{{user.username}}{% trans "!" %}</h1>
-            <p>You can start adding notes here.</p>
+            <p>You can start adding your notes here.</p>
         </div>
+		<div>
+			<p>notes</p>
+			{% for x in items %}
+				<p>{{ x.title }} - {{ x.created|date:"D d M Y" }}</p>
+				<p>{{ x.description }}</p>
+				<hr />
+			{% endfor %}
+		</div>
+		{% else %}
+			<h1>{% trans "Hello!" %}</h1>
+            <p>Please login <a href="login/">here</a> to continue.</p>
+		{% endif %}
     {% endblock %}
     </div> <!-- /container -->
 	
     <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.0.3.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 	<script>
-	$(document).ready(function () {
-    $("body").tooltip({
-        selector: '[data-toggle="tooltip"]'
-    });
+	$(function(){
+    $('.button-checkbox').each(function(){
+		var $widget = $(this),
+			$button = $widget.find('button'),
+			$checkbox = $widget.find('input:checkbox'),
+			color = $button.data('color'),
+			settings = {
+					on: {
+						icon: 'glyphicon glyphicon-check'
+					},
+					off: {
+						icon: 'glyphicon glyphicon-unchecked'
+					}
+			};
+
+		$button.on('click', function () {
+			$checkbox.prop('checked', !$checkbox.is(':checked'));
+			$checkbox.triggerHandler('change');
+			updateDisplay();
+		});
+
+		$checkbox.on('change', function () {
+			updateDisplay();
+		});
+
+		function updateDisplay() {
+			var isChecked = $checkbox.is(':checked');
+			// Set the button's state
+			$button.data('state', (isChecked) ? "on" : "off");
+
+			// Set the button's icon
+			$button.find('.state-icon')
+				.removeClass()
+				.addClass('state-icon ' + settings[$button.data('state')].icon);
+
+			// Update the button's color
+			if (isChecked) {
+				$button
+					.removeClass('btn-default')
+					.addClass('btn-' + color + ' active');
+			}
+			else
+			{
+				$button
+					.removeClass('btn-' + color + ' active')
+					.addClass('btn-default');
+			}
+		}
+		function init() {
+			updateDisplay();
+			// Inject the icon if applicable
+			if ($button.find('.state-icon').length == 0) {
+				$button.prepend('<i class="state-icon ' + settings[$button.data('state')].icon + '"></i>');
+			}
+		}
+		init();
+	});
 });
 	</script>
   </body>

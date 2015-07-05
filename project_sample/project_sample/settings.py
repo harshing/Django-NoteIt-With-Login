@@ -106,5 +106,5 @@ SITE_ID = 1
 STATIC_URL = '/static/'
 LOGIN_REDIRECT_URL = '/'
 TEMPLATE_DIRS = [
-    os.path.join(BASE_DIR, 'templates')
+    "F:/Task/project_sample/templates/"
 ]
